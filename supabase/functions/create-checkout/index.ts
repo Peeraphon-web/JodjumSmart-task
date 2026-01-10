@@ -23,7 +23,7 @@ serve(async (req) => {
     })
 
     const { customer_id, user_id, email } = await req.json()
-    const origin = req.headers.get('origin') || 'http://localhost:5173'
+    const origin = req.headers.get('origin') || 'https://jodjum-smart-task.vercel.app'
 
     let session;
 
