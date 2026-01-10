@@ -336,24 +336,23 @@ export default function Dashboard({ session }) {
   };
 
   const handleUpgrade = async () => {
-    setIsUpgrading(true);
+    setIsUpgrading(true); // เพิ่ม State นี้เข้าไปด้วยถ้ายังไม่มี
     try {
-      // ชื่อตรงนี้ต้องตรงกับชื่อโฟลเดอร์ฟังก์ชันใน Supabase
       const { data, error } = await supabase.functions.invoke(
         "create-checkout",
         {
           body: {
             user_id: session.user.id,
             email: session.user.email,
+            customer_id: profile?.stripe_customer_id, // ส่ง ID ลูกค้าไปด้วยถ้ามี
           },
         }
       );
 
       if (error) throw error;
-      if (data?.url) window.location.href = data.url; // ถ้าสำเร็จต้องสั่งเปลี่ยนหน้าตรงนี้
-    } catch (e) {
-      console.error("Upgrade Error:", e);
-      alert("เกิดข้อผิดพลาด: " + e.message);
+      if (data?.url) window.location.href = data.url;
+    } catch (err) {
+      alert("Error: " + err.message);
     } finally {
       setIsUpgrading(false);
     }
