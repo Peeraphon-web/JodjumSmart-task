@@ -166,16 +166,14 @@ export default function Dashboard({ session }) {
       alert("⚠️ สายฟรีจำกัด 10 งานครับ!");
       return;
     }
-    const { error } = await supabase
-      .from("tasks")
-      .insert([
-        {
-          title: newTask,
-          user_id: session.user.id,
-          priority: priority,
-          category_id: selectedCategoryId,
-        },
-      ]);
+    const { error } = await supabase.from("tasks").insert([
+      {
+        title: newTask,
+        user_id: session.user.id,
+        priority: priority,
+        category_id: selectedCategoryId,
+      },
+    ]);
     if (!error) {
       playSound("click");
       setNewTask("");
@@ -340,19 +338,26 @@ export default function Dashboard({ session }) {
   const handleUpgrade = async () => {
     setIsUpgrading(true);
     try {
+      // ชื่อตรงนี้ต้องตรงกับชื่อโฟลเดอร์ฟังก์ชันใน Supabase
       const { data, error } = await supabase.functions.invoke(
         "create-checkout",
-        { body: { user_id: session.user.id, email: session.user.email } }
+        {
+          body: {
+            user_id: session.user.id,
+            email: session.user.email,
+          },
+        }
       );
+
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) window.location.href = data.url; // ถ้าสำเร็จต้องสั่งเปลี่ยนหน้าตรงนี้
     } catch (e) {
-      alert(e.message);
+      console.error("Upgrade Error:", e);
+      alert("เกิดข้อผิดพลาด: " + e.message);
     } finally {
       setIsUpgrading(false);
     }
   };
-
   const handleManageSubscription = async () => {
     setIsOpeningPortal(true);
     try {
