@@ -190,7 +190,7 @@ export default function Dashboard({ session }) {
       .eq("id", task.id);
     if (!error) {
       if (newStatus === "done") {
-        await supabase.rpc("increment_exp", {
+        await supabase.rpc("streak_count", {
           user_id_input: session.user.id,
           amount: 10,
         });
